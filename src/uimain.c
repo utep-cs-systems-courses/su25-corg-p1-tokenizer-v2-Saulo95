@@ -1,12 +1,47 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include "tokenizer.h"
+#include "history.h"
 
+#define MaxSize 100
 
 int main() {
-  char input[20];
+    char input[MaxSize];
+    List *history = init_history();
 
-  
-  printf("Please enter your first name");
+    printf("Type text to tokenize.\n");
+    printf("Use '!n', history, exit as options\n");
 
-  fgets(input, sizeof(input), stdin);
-  printf("%s", input);
-}
+    while (1) {
+        printf("> ");
+        if (fgets(input, sizeof(input), stdin) == NULL) break;
+	
+        char *end = strchr(input, '\n');
+        if (end) *end = '\0';
+        if (strcmp(input, "exit") == 0) break;
+        if (strcmp(input, "history") == 0) {
+            print_history(history);
+            continue;}
+
+        if (input[0] == '!' && input[1] != '\0') {
+            int id = atoi(&input[1]);
+            char *previous = get_history(history, id);
+            if (previous) {
+                printf("You recalled%d: %s\n", id, previous);
+                char **tokens = tokenize(previous);
+                if (tokens) {
+                    print_tokens(tokens);
+                    free_tokens(tokens);
+                }
+            } else {
+                printf("Error!! No history for:!%d\n", id);}
+            continue; }
+        add_history(history, input);
+        char **tokens = tokenize(input);
+        if (tokens) {
+            print_tokens(tokens);
+            free_tokens(tokens); }}
+
+    free_history(history);
+    return 0;}
