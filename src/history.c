@@ -3,7 +3,7 @@
 #include <string.h>
 #include "history.h"
 
-// Initialize the history list
+// Initialize history list
 List* init_history() {
     List *list = malloc(sizeof(List));
     if (list) list->root = NULL;
@@ -12,9 +12,9 @@ List* init_history() {
 
 void add_history(List *list, char *str) {
     if (!list || !str) return;
-    Item *new_item = malloc(sizeof(Item));
+    Item *new_item = malloc(sizeof(Item));//Allocates memory for an item
     if (!new_item) return;
-    new_item->str = malloc(strlen(str) + 1);
+    new_item->str = malloc(strlen(str) + 1);//allocates memeory for input string plus terminator
     if (!new_item->str) {
         free(new_item);
         return;}
